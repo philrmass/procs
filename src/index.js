@@ -1,9 +1,6 @@
 import './style';
+import Notes from './components/Notes';
 
 export default function App() {
-  return (
-    <div>
-      <h1>Procs!</h1>
-    </div>
-  );
+  return <Notes />;
 }
