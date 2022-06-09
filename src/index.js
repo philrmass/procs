@@ -1,6 +1,8 @@
 import './style';
-import Notes from './components/Notes';
+import Home from './components/Home';
 
 export default function App() {
-  return <Notes />;
+  return (
+    <Home />
+  );
 }

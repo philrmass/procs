@@ -1,0 +1,7 @@
+.main {
+}
+
+.version {
+  color: var(--text-alt);
+  font-size: var(--font-sm);
+}
