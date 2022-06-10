@@ -1,7 +1,9 @@
 .main {
+  padding: var(--size-24);
 }
 
 .version {
+  margin-top: var(--size-24);
   color: var(--text-alt);
   font-size: var(--font-sm);
 }

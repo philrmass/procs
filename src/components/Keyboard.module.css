@@ -1,0 +1,41 @@
+.main {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.keys {
+  --key-width: 40px;
+  --key-height: 200px;
+  --black-width: 24px;
+  --black-height: 67%;
+
+  position: relative;
+  display: flex;
+}
+
+.key {
+  box-sizing: border-box;
+  width: var(--key-width);
+  height: var(--key-height);
+  border: 1px solid black;
+  border-radius: 0 0 4px 4px;
+  background: white;
+  font-size: 16px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: center;
+  padding-bottom: 0.5em;
+}
+
+.black {
+  box-sizing: border-box;
+  width: var(--black-width);
+  height: var(--black-height);
+  position: absolute;
+  top: 0;
+  background: #282828;
+  color: white;
+  font-size: 11px;
+}
