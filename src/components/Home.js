@@ -5,9 +5,8 @@ import styles from './Home.module.css';
 import { version } from '../../package.json';
 
 export default function Home () {
-  const AudioContext = window ? window.AudioContext : null;
   const [wave, setWave] = useState(null);
-  const [ac] = useState(new AudioContext());
+  const [ac] = useState(createAudioContext());
 
   return (
     <div className={styles.main}>
@@ -16,4 +15,10 @@ export default function Home () {
       <div className={styles.version}>{`v${version}`}</div>
     </div>
   );
+}
+
+function createAudioContext() {
+  if (typeof window !== 'undefined') {
+    return new window.AudioContext();
+  }
 }
