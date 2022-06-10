@@ -4,15 +4,15 @@ import Wave from './Wave';
 import styles from './Home.module.css';
 import { version } from '../../package.json';
 
-//??? change waveData to wave
 export default function Home () {
-  const [waveData, setWaveData] = useState(null);
-  const [ac] = useState(new window.AudioContext());
+  const AudioContext = window ? window.AudioContext : null;
+  const [wave, setWave] = useState(null);
+  const [ac] = useState(new AudioContext());
 
   return (
     <div className={styles.main}>
-      <Wave waveData={waveData} setWaveData={setWaveData} />
-      <Keyboard ac={ac} waveData={waveData} />
+      <Wave ac={ac} setWave={setWave} />
+      <Keyboard ac={ac} wave={wave} />
       <div className={styles.version}>{`v${version}`}</div>
     </div>
   );

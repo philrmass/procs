@@ -26,13 +26,13 @@ const noteStep = Math.pow(2, 1/12);
 const freqA4 = 440;
 const stepsToA4 = 9;
 
-export default function Keyboard({ ac, waveData }) {
+export default function Keyboard({ ac, wave }) {
   const notes = getNotes([-1, 0, 1]);
 
   const handleKey = (e) => {
     const index = keyIndices[e.code];
-    if (typeof index === 'number') {
-      playNote(ac, waveData, index);
+    if (typeof index === 'number' && !e.repeat) {
+      playNote(ac, wave, index);
     }
   };
 
@@ -48,7 +48,7 @@ export default function Keyboard({ ac, waveData }) {
               className={classes}
               style={sharp ? blackStyle : null}
               key={index}
-              onClick={() => playNote(ac, waveData, index)}
+              onClick={() => playNote(ac, wave, index)}
             >
               <span>
                 <span>{note}</span>
@@ -105,33 +105,19 @@ function getNotes(octaveIndices) {
   });
 }
 
-function playNote(ac, waveData, noteIndex) {
+function playNote(ac, wave, noteIndex) {
+  const start = performance.now();
   const freq = getFrequency(noteIndex);
 
-  //??? create here in setState
-  const b0 = performance.now();
   const osc = ac.createOscillator();
-  const b1 = performance.now();
-
-  //??? create in wave, when loaded or changed
-  const c0 = performance.now();
-  const real = waveData?.real ?? [0, 1];
-  const imag = waveData?.imag ?? [0, 0];
-  const wave = ac.createPeriodicWave(real, imag);
-  const c1 = performance.now();
-
-  const d0 = performance.now();
-  osc.setPeriodicWave(wave);
   osc.connect(ac.destination);
+  osc.setPeriodicWave(wave);
   osc.frequency.value = freq;
+
   osc.start(ac.currentTime);
   osc.stop(ac.currentTime + 0.5);
-  const d1 = performance.now();
-
-  console.log(`PLAY (${freq.toFixed(3)})`);
-  console.log(' osc', (b1 - b0).toFixed(3));
-  console.log(' wave', (c1 - c0).toFixed(3));
-  console.log(' play', (d1 - d0).toFixed(3));
+  const end = performance.now();
+  console.log(`play (${freq.toFixed(2)}) [${(end - start).toFixed(2)}]`);
 }
 
 function getFrequency(noteIndex) {
