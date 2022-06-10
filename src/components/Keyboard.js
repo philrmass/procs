@@ -1,17 +1,44 @@
 import styles from './Keyboard.module.css';
 import cn from 'classnames';
 
+const keyIndices = {
+  KeyQ: -4,
+  KeyA: -3,
+  KeyW: -2,
+  KeyS: -1,
+  KeyD: 0,
+  KeyR: 1,
+  KeyF: 2,
+  KeyT: 3,
+  KeyG: 4,
+  KeyH: 5,
+  KeyU: 6,
+  KeyJ: 7,
+  KeyI: 8,
+  KeyK: 9,
+  KeyO: 10,
+  KeyL: 11,
+  Semicolon: 12,
+  BracketLeft: 13,
+  Quote: 14,
+};
 const noteStep = Math.pow(2, 1/12);
 const freqA4 = 440;
 const stepsToA4 = 9;
 
-//??? add keyboard support d = c4
-export default function Keyboard({ waveData }) {
+export default function Keyboard({ ac, waveData }) {
   const notes = getNotes([-1, 0, 1]);
+
+  const handleKey = (e) => {
+    const index = keyIndices[e.code];
+    if (typeof index === 'number') {
+      playNote(ac, waveData, index);
+    }
+  };
 
   return (
     <div className={styles.main}>
-      <div className={styles.keys}>
+      <div className={styles.keys} tabIndex='0' onKeyDown={handleKey}>
         {notes.map(({ index, note, sharp, octave, offset }) => {
           const classes = cn(styles.key, { [styles.black]: sharp });
           const blackStyle = { left: `calc(${offset} * var(--key-width) - 0.5 * var(--black-width))` };
@@ -21,7 +48,7 @@ export default function Keyboard({ waveData }) {
               className={classes}
               style={sharp ? blackStyle : null}
               key={index}
-              onClick={() => playNote(index, waveData)}
+              onClick={() => playNote(ac, waveData, index)}
             >
               <span>
                 <span>{note}</span>
@@ -78,14 +105,8 @@ function getNotes(octaveIndices) {
   });
 }
 
-function playNote(noteIndex, waveData) {
+function playNote(ac, waveData, noteIndex) {
   const freq = getFrequency(noteIndex);
-
-  //??? create in home
-  const a0 = performance.now();
-  const AudioContext = window.AudioContext;
-  const ac = new AudioContext();
-  const a1 = performance.now();
 
   //??? create here in setState
   const b0 = performance.now();
@@ -103,12 +124,11 @@ function playNote(noteIndex, waveData) {
   osc.setPeriodicWave(wave);
   osc.connect(ac.destination);
   osc.frequency.value = freq;
-  osc.start();
-  osc.stop(0.5);
+  osc.start(ac.currentTime);
+  osc.stop(ac.currentTime + 0.5);
   const d1 = performance.now();
 
   console.log(`PLAY (${freq.toFixed(3)})`);
-  console.log(' ac', (a1 - a0).toFixed(3));
   console.log(' osc', (b1 - b0).toFixed(3));
   console.log(' wave', (c1 - c0).toFixed(3));
   console.log(' play', (d1 - d0).toFixed(3));
